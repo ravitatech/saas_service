@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_service_portal,saas.service.portal,model_saas_service,base.group_portal,1,0,0,0
+access_saas_service_manager,saas.service.manager,model_saas_service,sales_team.group_sale_manager,1,1,1,1
+access_saas_service_system,saas.service.system,model_saas_service,base.group_system,1,1,1,1
+access_saas_odoo_module_manager,saas.odoo.module.manager,model_saas_odoo_module,sales_team.group_sale_manager,1,1,1,1
+access_saas_odoo_module_system,saas.odoo.module.system,model_saas_odoo_module,base.group_system,1,1,1,1
+access_saas_odoo_module_portal,saas.odoo.module.portal,model_saas_odoo_module,base.group_portal,1,0,0,0
+access_saas_service_module_manager,saas.service.module.manager,model_saas_service_module,sales_team.group_sale_manager,1,1,1,1
+access_saas_service_module_system,saas.service.module.system,model_saas_service_module,base.group_system,1,1,1,1
+access_saas_service_module_portal,saas.service.module.portal,model_saas_service_module,base.group_portal,1,0,0,0

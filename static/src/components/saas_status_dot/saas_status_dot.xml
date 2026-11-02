@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="saas_service.SaasStatusDot">
+        <span class="o_saas_status_dot d-inline-flex align-items-center gap-1">
+            <i t-att-class="'fa fa-circle ' + colorClass" title="status"/>
+            <span t-esc="label"/>
+        </span>
+    </t>
+</templates>

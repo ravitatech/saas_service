@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="module_sale" model="saas.odoo.module">
+        <field name="name">فروش</field>
+        <field name="technical_name">sale</field>
+        <field name="category">فروش</field>
+    </record>
+    <record id="module_sale_management" model="saas.odoo.module">
+        <field name="name">مدیریت فروش</field>
+        <field name="technical_name">sale_management</field>
+        <field name="category">فروش</field>
+    </record>
+    <record id="module_crm" model="saas.odoo.module">
+        <field name="name">CRM</field>
+        <field name="technical_name">crm</field>
+        <field name="category">فروش</field>
+    </record>
+    <record id="module_account" model="saas.odoo.module">
+        <field name="name">حسابداری</field>
+        <field name="technical_name">account</field>
+        <field name="category">مالی</field>
+    </record>
+    <record id="module_purchase" model="saas.odoo.module">
+        <field name="name">خرید</field>
+        <field name="technical_name">purchase</field>
+        <field name="category">خرید</field>
+    </record>
+    <record id="module_stock" model="saas.odoo.module">
+        <field name="name">انبار</field>
+        <field name="technical_name">stock</field>
+        <field name="category">انبار</field>
+    </record>
+    <record id="module_project" model="saas.odoo.module">
+        <field name="name">پروژه</field>
+        <field name="technical_name">project</field>
+        <field name="category">خدمات</field>
+    </record>
+    <record id="module_hr" model="saas.odoo.module">
+        <field name="name">منابع انسانی</field>
+        <field name="technical_name">hr</field>
+        <field name="category">منابع انسانی</field>
+    </record>
+    <record id="module_website" model="saas.odoo.module">
+        <field name="name">وبسایت</field>
+        <field name="technical_name">website</field>
+        <field name="category">وبسایت</field>
+    </record>
+    <record id="module_contacts" model="saas.odoo.module">
+        <field name="name">مخاطبین</field>
+        <field name="technical_name">contacts</field>
+        <field name="category">پایه</field>
+    </record>
+    <record id="module_calendar" model="saas.odoo.module">
+        <field name="name">تقویم</field>
+        <field name="technical_name">calendar</field>
+        <field name="category">پایه</field>
+    </record>
+    <record id="module_saas_no_apps" model="saas.odoo.module">
+        <field name="name">مخفی‌سازی برنامه‌ها</field>
+        <field name="technical_name">saas_no_apps</field>
+        <field name="category">SaaS</field>
+        <field name="description">منوی Apps را برای اودووی مشتری مخفی می‌کند. باید داخل ایمیج اختصاصی باشد.</field>
+    </record>
+</odoo>

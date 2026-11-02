@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- مخفی کردن منوی Apps برای اودووی مشتری -->
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="base.menu_tests" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

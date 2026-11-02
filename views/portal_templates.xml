@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_services" inherit_id="sale.portal_my_home_sale" name="سرویس‌های شما">
+        <xpath expr="//div[@id='portal_client_category']//t[@t-set='title']" position="replace">
+            <t t-set="title">سرویس‌های شما</t>
+        </xpath>
+        <xpath expr="//div[@id='portal_client_category']//t[@t-set='url']" position="replace">
+            <t t-set="url" t-value="'/my/services'"/>
+        </xpath>
+        <xpath expr="//div[@id='portal_client_category']//t[@t-set='text']" position="replace">
+            <t t-set="text">مشاهده سرویس‌های خریداری‌شده و مشخصات آن‌ها</t>
+        </xpath>
+        <xpath expr="//div[@id='portal_client_category']//t[@t-set='placeholder_count']" position="replace">
+            <t t-set="placeholder_count" t-value="'service_count'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_saas" inherit_id="portal.portal_breadcrumbs" name="SaaS breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'saas_service'" class="breadcrumb-item active">سرویس‌های شما</li>
+            <li t-if="page_name == 'saas_service_detail'" class="breadcrumb-item">
+                <a href="/my/services">سرویس‌های شما</a>
+            </li>
+            <li t-if="page_name == 'saas_service_detail'" class="breadcrumb-item active">
+                <t t-out="service.hostname"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_services" name="سرویس‌های شما">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">سرویس‌های شما</t>
+            </t>
+            <div t-if="not services" class="alert alert-warning" role="alert">
+                هنوز سرویسی برای حساب شما ثبت نشده است.
+            </div>
+            <t t-if="services" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>نام سرویس</th>
+                        <th>دامنه</th>
+                        <th>NodePort</th>
+                        <th>وضعیت کلی</th>
+                        <th class="text-end">وضعیت</th>
+                    </tr>
+                </thead>
+                <t t-foreach="services" t-as="service">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/services/{{ service.id }}">
+                                <t t-out="service.hostname"/>
+                            </a>
+                        </td>
+                        <td><t t-out="service.domain"/></td>
+                        <td>
+                            <a t-if="service.node_url" t-att-href="service.node_url" target="_blank">
+                                <t t-out="service.node_port"/>
+                            </a>
+                            <t t-else=""><t t-out="service.node_port"/></t>
+                        </td>
+                        <td>
+                            <span t-attf-class="text-{{ service.get_health_color() }}">
+                                <i class="fa fa-circle"/>
+                                <span class="ms-1"><span t-field="service.health_state"/></span>
+                            </span>
+                        </td>
+                        <td class="text-end"><span t-field="service.state"/></td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_service" name="مشخصات سرویس">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="mb-0"><t t-out="service.hostname"/></h3>
+                        <div class="d-flex align-items-center gap-2">
+                            <span t-attf-class="fw-semibold text-{{ service.get_health_color() }}">
+                                <i class="fa fa-circle"/>
+                                <span class="ms-1"><span t-field="service.health_state"/></span>
+                            </span>
+                            <span t-attf-class="badge text-bg-{{ service.get_health_color() }}">
+                                <span t-field="service.state"/>
+                            </span>
+                        </div>
+                    </div>
+                    <p t-if="service.state != 'running'" class="alert alert-info">
+                        سرویس هنوز در حال آماده‌سازی است. چند دقیقه بعد صفحه اودوو و مشخصات را دوباره بررسی کنید.
+                    </p>
+                    <p t-if="service.state == 'error'" class="alert alert-warning">
+                        <t t-out="service.error_message"/>
+                    </p>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>نام سرویس</th>
+                                <td><t t-out="service.hostname"/></td>
+                            </tr>
+                            <tr>
+                                <th>دامنه</th>
+                                <td>
+                                    <a t-if="service.url" t-att-href="service.url" target="_blank">
+                                        <t t-out="service.domain"/>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>پورت NodePort</th>
+                                <td><code t-out="service.node_port"/></td>
+                            </tr>
+                            <tr>
+                                <th>آدرس NodePort</th>
+                                <td>
+                                    <a t-if="service.node_url" t-att-href="service.node_url" target="_blank">
+                                        <t t-out="service.node_url"/>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>نام دیتابیس</th>
+                                <td><code t-out="service.database_name"/></td>
+                            </tr>
+                            <tr>
+                                <th>کاربر دیتابیس</th>
+                                <td><code t-out="service.database_user"/></td>
+                            </tr>
+                            <tr>
+                                <th>رمز دیتابیس</th>
+                                <td>
+                                    <div class="input-group input-group-sm o_saas_password_group" style="max-width: 28rem;">
+                                        <input type="password"
+                                               class="form-control o_saas_password_input"
+                                               readonly="readonly"
+                                               autocomplete="off"
+                                               t-att-value="service.database_password or ''"/>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary o_saas_password_toggle"
+                                                title="نمایش رمز"
+                                                aria-label="نمایش رمز">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>کاربر اودوو</th>
+                                <td><code t-out="service.odoo_admin_login"/></td>
+                            </tr>
+                            <tr>
+                                <th>رمز اودوو</th>
+                                <td>
+                                    <div class="input-group input-group-sm o_saas_password_group" style="max-width: 28rem;">
+                                        <input type="password"
+                                               class="form-control o_saas_password_input"
+                                               readonly="readonly"
+                                               autocomplete="off"
+                                               t-att-value="service.odoo_admin_password or ''"/>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary o_saas_password_toggle"
+                                                title="نمایش رمز"
+                                                aria-label="نمایش رمز">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>رمز مستر</th>
+                                <td>
+                                    <div class="input-group input-group-sm o_saas_password_group" style="max-width: 28rem;">
+                                        <input type="password"
+                                               class="form-control o_saas_password_input"
+                                               readonly="readonly"
+                                               autocomplete="off"
+                                               t-att-value="service.odoo_master_password or ''"/>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary o_saas_password_toggle"
+                                                title="نمایش رمز"
+                                                aria-label="نمایش رمز">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>وضعیت کلی</th>
+                                <td>
+                                    <span t-attf-class="text-{{ service.get_health_color() }}">
+                                        <i class="fa fa-circle"/>
+                                        <span class="ms-1"><span t-field="service.health_state"/></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>ماژول‌های نصب‌شده</th>
+                                <td>
+                                    <t t-set="installed_modules" t-value="service.service_module_ids.filtered(lambda m: m.state == 'installed')"/>
+                                    <div t-if="not installed_modules" class="text-muted">هنوز لیست ماژول همگام نشده است.</div>
+                                    <ul t-if="installed_modules" class="mb-0 ps-3">
+                                        <t t-foreach="installed_modules" t-as="mod">
+                                            <li>
+                                                <t t-out="mod.name or mod.technical_name"/>
+                                                <code class="ms-1" t-out="mod.technical_name"/>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>پاد اودوو</th>
+                                <td>
+                                    <div><t t-out="service.odoo_pod"/></div>
+                                    <span t-attf-class="text-{{ service.get_phase_color(service.odoo_pod_phase) }}">
+                                        <i class="fa fa-circle"/>
+                                        <span class="ms-1"><t t-out="service.odoo_pod_phase or 'نامشخص'"/></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>پاد پستگرس</th>
+                                <td>
+                                    <div><t t-out="service.postgres_pod"/></div>
+                                    <span t-attf-class="text-{{ service.get_phase_color(service.postgres_pod_phase) }}">
+                                        <i class="fa fa-circle"/>
+                                        <span class="ms-1"><t t-out="service.postgres_pod_phase or 'نامشخص'"/></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>پاد ذخیره‌سازی</th>
+                                <td>
+                                    <div><t t-out="service.storage_pod"/></div>
+                                    <span t-attf-class="text-{{ service.get_phase_color(service.storage_pod_phase) }}">
+                                        <i class="fa fa-circle"/>
+                                        <span class="ms-1"><t t-out="service.storage_pod_phase or 'نامشخص'"/></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

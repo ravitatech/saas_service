@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_service_list" model="ir.ui.view">
+        <field name="name">saas.service.list</field>
+        <field name="model">saas.service</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="hostname"/>
+                <field name="partner_id"/>
+                <field name="domain"/>
+                <field name="node_port"/>
+                <field name="node_url" widget="url" optional="hide"/>
+                <field name="sale_order_id" optional="hide"/>
+                <field name="health_state" string="وضعیت کلی" widget="saas_status_dot" options="{'mode': 'health'}"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'running'"
+                    decoration-warning="state in ('provisioning', 'inactive')"
+                    decoration-danger="state == 'error'"/>
+                <button name="action_deactivate" type="object" string="غیرفعال"
+                    icon="fa-pause" invisible="state not in ('running', 'error', 'provisioning')"/>
+                <button name="action_activate" type="object" string="فعال"
+                    icon="fa-play" invisible="state != 'inactive'"/>
+                <field name="odoo_pod_phase" string="اودوو" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                <field name="postgres_pod_phase" string="پستگرس" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                <field name="storage_pod_phase" string="ذخیره" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                <field name="odoo_pod" optional="hide"/>
+                <field name="postgres_pod" optional="hide"/>
+                <field name="storage_pod" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_service_form" model="ir.ui.view">
+        <field name="name">saas.service.form</field>
+        <field name="model">saas.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_provision" type="object" string="راه‌اندازی" class="btn-primary"
+                        invisible="state in ('running', 'inactive')"/>
+                    <button name="action_deactivate" type="object" string="غیرفعال"
+                        invisible="state not in ('running', 'error', 'provisioning')"
+                        confirm="پادهای این سرویس Scale Down می‌شوند. داده‌ها روی PVC می‌مانند."/>
+                    <button name="action_activate" type="object" string="فعال" class="btn-primary"
+                        invisible="state != 'inactive'"
+                        confirm="پادهای این سرویس دوباره Scale Up می‌شوند."/>
+                    <button name="action_sync_status" type="object" string="به‌روزرسانی وضعیت"
+                        invisible="not odoo_pod"/>
+                    <button name="action_open_node_url" type="object" string="باز کردن با NodePort"
+                        class="btn-primary" invisible="not node_url or state == 'inactive'"/>
+                    <button name="action_open_domain_url" type="object" string="باز کردن با دامنه"
+                        invisible="not url or state == 'inactive'"/>
+                    <button name="action_sync_modules" type="object" string="بروزرسانی لیست ماژول‌ها"
+                        invisible="state != 'running'"/>
+                    <button name="action_install_modules" type="object" string="نصب ماژول‌های انتخابی"
+                        class="btn-secondary" invisible="state != 'running'"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,provisioning,running,inactive"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="hostname" readonly="state not in ('draft', 'error')" placeholder="نام انگلیسی سرویس"/></h1>
+                        <h3>
+                            <field name="health_state" widget="saas_status_dot" options="{'mode': 'health'}"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group string="مشتری و فروش">
+                            <field name="partner_id" readonly="state not in ('draft', 'error')"/>
+                            <field name="sale_order_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="provisioned_at"/>
+                        </group>
+                        <group string="دسترسی">
+                            <field name="domain"/>
+                            <field name="url" widget="url"/>
+                            <field name="node_host"/>
+                            <field name="node_port"/>
+                            <field name="node_url" widget="url"/>
+                            <field name="namespace"/>
+                            <field name="random_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="دیتابیس">
+                            <field name="database_name"/>
+                            <field name="database_user"/>
+                            <field name="database_password" widget="saas_password"/>
+                        </group>
+                        <group string="اودوو">
+                            <field name="odoo_admin_login"/>
+                            <field name="odoo_admin_password" widget="saas_password"/>
+                            <field name="odoo_master_password" widget="saas_password"/>
+                        </group>
+                    </group>
+                    <group string="پادها">
+                        <group>
+                            <field name="odoo_pod"/>
+                            <field name="odoo_pod_phase" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                            <field name="odoo_service"/>
+                        </group>
+                        <group>
+                            <field name="postgres_pod"/>
+                            <field name="postgres_pod_phase" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                            <field name="postgres_service"/>
+                        </group>
+                        <group>
+                            <field name="storage_pod"/>
+                            <field name="storage_pod_phase" widget="saas_status_dot" options="{'mode': 'phase'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="ماژول‌ها" name="modules">
+                            <group>
+                                <group string="نصب هنگام ساخت / نصب بعدی">
+                                    <field name="odoo_image"/>
+                                    <field name="requested_module_ids" widget="many2many_tags"
+                                        options="{'no_create_edit': True}"/>
+                                    <field name="install_module_names" placeholder="sale,crm,stock"/>
+                                    <field name="installed_module_count"/>
+                                </group>
+                            </group>
+                            <field name="service_module_ids">
+                                <list editable="bottom" decoration-success="state == 'installed'"
+                                      decoration-warning="state == 'pending'"
+                                      decoration-danger="state == 'failed'">
+                                    <field name="name"/>
+                                    <field name="technical_name"/>
+                                    <field name="module_id" optional="hide"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="last_error" optional="show"/>
+                                </list>
+                            </field>
+                            <p class="text-muted">
+                                ماژول‌های اولیه هنگام ساخت سرویس نصب می‌شوند.
+                                برای سرویس فعال، ماژول را انتخاب یا در «نصب سریع» بنویسید و دکمه «نصب ماژول‌های انتخابی» را بزنید.
+                            </p>
+                        </page>
+                    </notebook>
+                    <group string="خطا" invisible="state != 'error'">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saas_service_search" model="ir.ui.view">
+        <field name="name">saas.service.search</field>
+        <field name="model">saas.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="hostname"/>
+                <field name="partner_id"/>
+                <field name="sale_order_id"/>
+                <field name="domain"/>
+                <filter name="running" string="فعال" domain="[('state', '=', 'running')]"/>
+                <filter name="inactive" string="غیرفعال" domain="[('state', '=', 'inactive')]"/>
+                <filter name="provisioning" string="در حال ساخت" domain="[('state', '=', 'provisioning')]"/>
+                <filter name="error" string="خطا" domain="[('state', '=', 'error')]"/>
+                <filter name="healthy" string="سالم" domain="[('health_state', '=', 'healthy')]"/>
+                <filter name="unhealthy" string="دارای مشکل" domain="[('health_state', '=', 'danger')]"/>
+                <group>
+                    <filter name="group_partner" string="مشتری" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="وضعیت" context="{'group_by': 'state'}"/>
+                    <filter name="group_health" string="وضعیت کلی" context="{'group_by': 'health_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_saas_service" model="ir.actions.act_window">
+        <field name="name">سرویس‌ها</field>
+        <field name="res_model">saas.service</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_saas_service_search"/>
+    </record>
+
+    <record id="action_saas_paid_orders" model="ir.actions.act_window">
+        <field name="name">فروش‌های انجام‌شده</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('saas_service_id', '!=', False), '&amp;', ('state', '=', 'sale'), ('order_line.product_id.is_saas_service', '=', True)]</field>
+        <field name="context">{'search_default_order': 0}</field>
+    </record>
+</odoo>

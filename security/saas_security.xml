@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="saas_service_portal_rule" model="ir.rule">
+        <field name="name">سرویس SaaS: فقط سرویس خود مشتری</field>
+        <field name="model_id" ref="model_saas_service"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">[('partner_id', 'child_of', user.partner_id.commercial_partner_id.id)]</field>
+    </record>
+    <record id="saas_service_manager_rule" model="ir.rule">
+        <field name="name">سرویس SaaS: مدیر همه سرویس‌ها</field>
+        <field name="model_id" ref="model_saas_service"/>
+        <field name="groups" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

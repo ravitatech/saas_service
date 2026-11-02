@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_saas" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.saas</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="saas-service" name="saas_service" groups="base.group_system">
+                    <block title="ایمیج و زیرساخت SaaS">
+                        <setting string="ایمیج اودوو مشتری" help="مثلا ravitatech/odoo:19-saas">
+                            <field name="saas_odoo_image"/>
+                        </setting>
+                        <setting string="ایمیج پستگرس">
+                            <field name="saas_postgres_image"/>
+                        </setting>
+                        <setting string="ایمیج storage">
+                            <field name="saas_storage_image"/>
+                        </setting>
+                        <setting string="آدرس نود NodePort">
+                            <field name="saas_node_host"/>
+                        </setting>
+                        <setting string="پسوند دامنه">
+                            <field name="saas_domain_suffix"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

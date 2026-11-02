@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="config_saas_odoo_image" model="ir.config_parameter">
+        <field name="key">saas_service.odoo_image</field>
+        <field name="value">ravitatech/odoo:19-saas</field>
+    </record>
+    <record id="config_saas_postgres_image" model="ir.config_parameter">
+        <field name="key">saas_service.postgres_image</field>
+        <field name="value">postgres:18</field>
+    </record>
+    <record id="config_saas_storage_image" model="ir.config_parameter">
+        <field name="key">saas_service.storage_image</field>
+        <field name="value">busybox:1.37</field>
+    </record>
+    <record id="config_saas_node_host" model="ir.config_parameter">
+        <field name="key">saas_service.node_host</field>
+        <field name="value">172.20.21.22</field>
+    </record>
+    <record id="config_saas_domain_suffix" model="ir.config_parameter">
+        <field name="key">saas_service.domain_suffix</field>
+        <field name="value">ravitatech.com</field>
+    </record>
+</odoo>

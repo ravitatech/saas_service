@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_root"
+        name="saas-service"
+        groups="sales_team.group_sale_manager,base.group_system"
+        sequence="45"/>
+    <menuitem id="menu_saas_services"
+        name="سرویس‌ها"
+        parent="menu_saas_root"
+        action="action_saas_service"
+        sequence="10"/>
+    <menuitem id="menu_saas_sales"
+        name="فروش‌های انجام‌شده"
+        parent="menu_saas_root"
+        action="action_saas_paid_orders"
+        sequence="20"/>
+    <menuitem id="menu_saas_modules"
+        name="کاتالوگ ماژول‌ها"
+        parent="menu_saas_root"
+        action="action_saas_odoo_module"
+        sequence="30"/>
+    <menuitem id="menu_saas_settings"
+        name="پیکربندی"
+        parent="menu_saas_root"
+        action="base_setup.action_general_configuration"
+        sequence="90"
+        groups="base.group_system"/>
+</odoo>
